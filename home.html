@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+   
+<head>
+     <title>Bucks ICU Jobs List</title>
+  <meta http-equiv="content-type" content="text/plain; charset=UTF-8" />
+  <style>
+ 
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+th.Bed{
+    width: 10%
+}
+th.Who {
+  width: 15%
+}
+th.Done {
+  width: 15%
+}
+tr {
+  font-family: Arial, Helvetica, sans-serif;
+  border: 1px solid #ddd;
+  padding: 2px;
+}
+tr:nth-child(even){background-color: #f2f2f2;}
+tr:hover {background-color: #ddd;}
+
+th.Job {
+  width: 60%; /* unnecessary probably */
+}
+td {
+  text-align: left;
+  height: 70px;
+  padding: 10px;
+  font-size: 2.5em;
+}
+
+  </style>
+  <script>
+  var icuBed = new Array();
+  //bed 0 is blank, I think, and the zeroth column is ID which isn't displayed
+  for(let v = 1;v<18;v++){
+      icuBed[v] = new Array ("","","","","");
+  }
+ importArray()
+
+
+    function importArray(){
+// get json format of database from php file "getter"
+   var xmlhttp = new XMLHttpRequest();
+   
+   xmlhttp.onreadystatechange = function(){
+    if (this.readyState == 4 && this.status == 200) {
+    impArray = JSON.parse(this.responseText);
+    
+    for(a=0;a<impArray.length;a++){
+            icuBed[a+1][0] = impArray[a].ID
+            icuBed[a+1][1] = impArray[a].Bed;
+            icuBed[a+1][2] = impArray[a].Job;
+            icuBed[a+1][3] = impArray[a].Who;
+            icuBed[a+1][4] = impArray[a].Done;
+            }
+            updateAll();
+        }
+   }
+    xmlhttp.open("GET", "getter.php", true);
+    xmlhttp.send();
+  
+}
+    
+function sendArray(bednum,col){
+      // icuBed[bednum][0] shouldn't change as it's the ID
+      
+      //array and table cells are out of synch by 1 because we're not displaying bed ID on the table, only the bed name
+    icuBed[bednum][col+1] = document.getElementById('mainTable').rows[bednum].cells[col].textContent;
+    
+    var expArray = JSON.stringify(icuBed[bednum]);
+    //converts array to a string to send, then remove square bracketts, then returns
+    expArray = expArray.slice(1,-1);
+    expArray = expArray.replace(/\n/g, "\\\\n");
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "updateDB.php?q="+expArray, true);
+    xmlhttp.send();
+ 
+    updateAll();
+}
+function updateAll(){
+    
+    for(tableRow=1;tableRow<17;tableRow++){
+       // Bed number, not ID
+        document.getElementById('mainTable').rows[tableRow].cells[0].innerHTML = icuBed[tableRow][1];
+    //checkbox state
+        document.getElementById('mainTable').rows[tableRow].cells[3].innerHTML = "<div style = 'background-color:" + icuBed[tableRow][4] + ";color:" + icuBed[tableRow][4] + "' onclick = 'boxClick(" + tableRow + ")'>" + icuBed[tableRow][4] + "</div>";
+     
+    //rest of cells
+    for(cellID=1;cellID<3;cellID++){
+		document.getElementById('mainTable').rows[tableRow].cells[cellID].innerHTML = "<div contenteditable = 'true' onblur = 'sendArray(" + tableRow + ","  + cellID + ")'>" + icuBed[tableRow][cellID+1] + "</div>"
+	
+}
+}
+}
+function boxClick(BNum){
+    if(icuBed[BNum][4]=="white"){
+        icuBed[BNum][4]="yellow"
+    }
+    else if(icuBed[BNum][4]=="yellow"){
+        icuBed[BNum][4]="red"
+    }
+    else if(icuBed[BNum][4]=="red"){
+        icuBed[BNum][4]="green"
+    }
+    else if(icuBed[BNum][4]=="green"){
+        icuBed[BNum][4]="white"
+    }
+    document.getElementById('mainTable').rows[BNum].cells[3].innerHTML = icuBed[BNum][4];
+    sendArray(BNum,3)
+}
+
+</script>
+</head>
+<body>
+<table id="mainTable" summary="ICU Task List">
+	<thead>
+		<tr>
+			<th class = "Bed" scope="col">
+			<h2>Bed</h2>
+			</th>
+			<th class = "Job" scope="col"><h2>Job</h2></th>
+			<th class = "Who" scope="col"><h2>Who</h2></th>
+			<th class = "Done" scope="col"><h2>Status</h2></th>
+		</tr>
+	</thead>
+	<tbody id="wholeT">
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+<p></p>
+</body>
+</html>
